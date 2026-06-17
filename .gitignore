@@ -26,3 +26,6 @@ go.work.sum
 
 pkg/
 RULES.TXT
+
+# do not commit plans
+docs/

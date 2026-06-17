@@ -1,21 +1,22 @@
 package lib
 
 import (
-	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"go.uber.org/zap"
 )
 
 func New(c Config, l *zap.SugaredLogger) Civ2Linter {
 	cl := Civ2Linter{
-		Config:       c,
-		Logger:       l,
-		Sections:     make(map[string][]string, 25),
-		SeenSections: make(map[string]bool, 25),
+		Config: c,
+		Logger: l,
+		Parser: RulesParser{
+			Sections:     make(map[string][]LineInfo, 25),
+			SeenSections: make(map[string]bool, 25),
+		},
 	}
 	return cl
 }
@@ -28,7 +29,7 @@ func (cl *Civ2Linter) Lint() error {
 		return err
 	}
 
-	fmt.Println("Seen sections", cl.SeenSections)
+	fmt.Println("Seen sections", cl.Parser.SeenSections)
 
 	err = cl.LintAdvances()
 	if err != nil {
@@ -54,32 +55,18 @@ func (cl *Civ2Linter) parseFile(filename string) error {
 		cl.Logger.Error(fmt.Sprintf("could not open %s:", filename), zap.Error(err))
 		return err
 	}
-	defer readFile.Close()
+	defer func() { _ = readFile.Close() }()
 
-	fileScanner := bufio.NewScanner(readFile)
-
-	fileScanner.Split(bufio.ScanLines)
-
-	currentSection := ""
-	for fileScanner.Scan() {
-		line := strings.TrimSpace(
-			strings.Split(
-				fileScanner.Text(), ";")[0])
-		// cl.Logger.Info(line)
-		if strings.HasPrefix(line, ";") {
-			continue
-		} else if strings.HasPrefix(line, "@") {
-			cl.Logger.Infof("new section: %s", line)
-			currentSection = line
-			cl.SeenSections[currentSection] = true
-			cl.Sections[currentSection] = []string{}
-		} else if len(line) == 0 {
-			continue
-		} else if currentSection == "" {
-			return fmt.Errorf("reached content before any section: %s", line)
-		} else {
-			cl.Sections[currentSection] = append(cl.Sections[currentSection], line)
-		}
+	content, err := io.ReadAll(readFile)
+	if err != nil {
+		return err
 	}
+
+	parser := &RulesParser{}
+	if err := parser.Parse(string(content)); err != nil {
+		return err
+	}
+
+	cl.Parser = *parser
 	return nil
 }

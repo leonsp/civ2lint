@@ -10,7 +10,7 @@ import (
 
 func (cl *Civ2Linter) LintAdvances() error {
 	section := "@CIVILIZE"
-	lines, ok := cl.Sections[section]
+	lines, ok := cl.Parser.Sections[section]
 	if !ok {
 		message := fmt.Sprintf("section missing: %s", section)
 		cl.Logger.Error(message)
@@ -18,28 +18,31 @@ func (cl *Civ2Linter) LintAdvances() error {
 	}
 
 	cl.Rules.Civilize = make(map[string]Civilize, len(lines))
-	for i, line := range lines {
-		cols := strings.Split(line, ",")
+	for i, info := range lines {
+		num := info.LineNumber
+		line := info.Text
+		comment_cols := strings.Split(line, ";")
+		cols := strings.Split(comment_cols[0], ",")
 		if len(cols) < 7 {
-			return fmt.Errorf("too few columns: %s", line)
+			return fmt.Errorf("too few columns in line %d: %s", num, line)
 		} else if len(cols) > 7 {
-			return fmt.Errorf("too many columns: %s", line)
+			return fmt.Errorf("too many columns in line %d: %s", num, line)
 		}
 		aiValue, err := strconv.Atoi(strings.TrimSpace(cols[1]))
 		if err != nil {
-			return err
+			return fmt.Errorf("invalid aiValue in line %d, %q: %w", num, line, err)
 		}
 		modifier, err := strconv.Atoi(strings.TrimSpace(cols[2]))
 		if err != nil {
-			return err
+			return fmt.Errorf("invalid modifier in line %d, %q: %w", num, line, err)
 		}
 		epoch, err := strconv.Atoi(strings.TrimSpace(cols[5]))
 		if err != nil {
-			return err
+			return fmt.Errorf("invalid epoch in line %d, %q: %w", num, line, err)
 		}
 		category, err := strconv.Atoi(strings.TrimSpace(cols[6]))
 		if err != nil {
-			return err
+			return fmt.Errorf("invalid category in line %d, %q: %w", num, line, err)
 		}
 		advance := Civilize{
 			Name:     strings.TrimSpace(cols[0]),

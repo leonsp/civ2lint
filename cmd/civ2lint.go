@@ -22,7 +22,7 @@ func Init() {
 		return
 	}
 	logger, _ := zap.NewProduction()
-	defer logger.Sync() // flushes buffer, if any
+	defer func() { _ = logger.Sync() }() // flushes buffer, if any
 	sugar := logger.Sugar()
 
 	sugar.Info("Logger initialized")

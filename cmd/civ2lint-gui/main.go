@@ -1,4 +1,4 @@
-package main
+package gui
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ import (
 
 const appId = "com.github.leonsp.civ2lint"
 
-func main() {
+func Main() {
 	a := app.NewWithID(appId)
 	w := a.NewWindow("civ2lint GUI")
 

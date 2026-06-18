@@ -81,7 +81,7 @@ func (cl *Civ2Linter) FindLoops(seen []string, next string) error {
 		return nil
 	}
 	if slices.Contains(seen, next) {
-		return fmt.Errorf("found loop: %v, %s", seen, next)
+		return fmt.Errorf("found loop: %v, %s for %v", seen, next, cl.Rules.Civilize[next].Name)
 	}
 
 	seen = append(seen, next)

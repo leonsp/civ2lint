@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"flag"
@@ -9,7 +9,7 @@ import (
 	"github.com/leonsp/civ2lint/lib"
 )
 
-func Init() {
+func main() {
 	var c lib.Config
 	var usage bool
 

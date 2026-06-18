@@ -25,7 +25,7 @@ func (cl *Civ2Linter) Lint() error {
 	var err error
 	err = cl.parseFile("rules.txt")
 	if err != nil {
-		cl.Logger.Error("parsing failed:", zap.Error(err))
+		fmt.Printf("parsing failed: %v\n", err.Error())
 		return err
 	}
 
@@ -33,11 +33,8 @@ func (cl *Civ2Linter) Lint() error {
 
 	err = cl.LintAdvances()
 	if err != nil {
-		cl.Logger.Error("linting advances failed:", zap.Error(err))
-		return err
+		fmt.Printf("linting advances failed:\n%v\n", err.Error())
 	}
-
-	fmt.Println(cl.Rules.Civilize)
 
 	return nil
 }

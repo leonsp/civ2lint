@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/leonsp/civ2lint/cmd"
+	gui "github.com/leonsp/civ2lint/cmd/civ2lint-gui"
 )
 
 func main() {
-	cmd.Init()
+	gui.Main()
 }

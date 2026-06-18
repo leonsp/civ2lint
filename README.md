@@ -1,6 +1,6 @@
 # civ2lint
 
-This is a linter for Civilization II rule files. It's a command line tool you can use to detect known issues.
+This is a linter for Civilization II rule files. It's a tool you can use to detect known issues.
 
 ## Usage
 

@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"flag"
@@ -9,7 +9,7 @@ import (
 	"github.com/leonsp/civ2lint/lib"
 )
 
-func Init() {
+func main() {
 	var c lib.Config
 	var usage bool
 
@@ -22,7 +22,7 @@ func Init() {
 		return
 	}
 	logger, _ := zap.NewProduction()
-	defer logger.Sync() // flushes buffer, if any
+	defer func() { _ = logger.Sync() }() // flushes buffer, if any
 	sugar := logger.Sugar()
 
 	sugar.Info("Logger initialized")

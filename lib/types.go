@@ -10,11 +10,10 @@ type Config struct {
 }
 
 type Civ2Linter struct {
-	Config       Config
-	Logger       *zap.SugaredLogger
-	Sections     map[string][]string
-	SeenSections map[string]bool
-	Rules        Civ2Rules
+	Config Config
+	Logger *zap.SugaredLogger
+	Parser RulesParser
+	Rules  Civ2Rules
 }
 
 type Civ2Rules struct {
@@ -30,4 +29,15 @@ type Civilize struct {
 	Preq2    string
 	Epoch    int
 	Category int
+}
+
+type LineInfo struct {
+	LineNumber int
+	Text       string
+	Comment    string
+}
+
+type RulesParser struct {
+	Sections     map[string][]LineInfo
+	SeenSections map[string]bool
 }

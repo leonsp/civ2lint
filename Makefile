@@ -13,7 +13,7 @@ build_windows_386:
 
 build_linux_amd64:
 	GOOS=linux GOARCH=amd64 go build -trimpath -o pkg/civ2lint_linux_amd64
-	GOOS=linux GOARCH=amd64s go build -trimpath -o pkg/civ2lint_gui_linux_amd64 ./cmd/civ2lint-gui
+	GOOS=linux GOARCH=amd64 go build -trimpath -o pkg/civ2lint_gui_linux_amd64 ./cmd/civ2lint-gui
 
 clean:
 	rm pkg/*
